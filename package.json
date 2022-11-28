@@ -16,5 +16,8 @@
     "url": "https://github.com/Staceyjean1/tinyapp/issues"
   },
   "homepage": "https://github.com/Staceyjean1/tinyapp#readme",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
 }
