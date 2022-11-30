@@ -12,6 +12,7 @@
   </head>
 
   <body>
+    
     <%- include('partials/_header') %>
     <div class="card text-center">
       <div class="card-header"></div>
@@ -21,6 +22,9 @@
           Short URL ID: <a href="/u/<%= id %>"><%= id %></a>
         </p>
       </div>
+      //insert form here - method (get or post), action (url that corresponds to express server), input as child of form
+      <form method="POST" action="/urls/<%= id %>/newURL">
+    
       <div class="card-footer text-muted"></div>
     </div>
     <!-- Bootstrap JS -->

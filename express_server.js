@@ -21,19 +21,18 @@ app.get("/urls", (req, res) => {
 });
 
 app.post("/urls", (req, res) => {
-  console.log('request body', req.body["longURL"]);
-  console.log('generate random string', generateRandomString());
+  
   let key = generateRandomString();
   urlDatabase[key] = req.body["longURL"];
-  console.log('urlDatabase', urlDatabase);// Log the POST request body to the console
-  res.send("Ok"); // Respond with 'Ok' (we will replace this)
+  // Log the POST request body to the console
+  res.redirect("/urls"); // Respond with 'Ok' (we will replace this)
 });
 app.get("/urls/new", (req, res) => {
   res.render("urls_new");
 });
 
 app.get("/urls/:id", (req, res) => {
-  const templateVars = { id: req.params.id, longURL: b2xVn2/* What goes here? */ };
+  const templateVars = { id: req.params.id, longURL: urlDatabase[req.params.id]/* What goes here? */ };
   res.render("urls_show", templateVars);
 });
 
@@ -59,8 +58,6 @@ app.get("/fetch", (req, res) => {
   res.send(`a = ${a}`);
 });
 
-
-
 app.post("/urls/:id/delete", (req, res) => {
   console.log("delete")
 
@@ -70,6 +67,12 @@ app.post("/urls/:id/delete", (req, res) => {
 });
 
 
+
+const templateVars = {
+  username: req.cookies["username"],
+  // ... any other vars
+};
+res.render("urls_index", templateVars);
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
