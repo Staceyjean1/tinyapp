@@ -17,6 +17,7 @@
     <title>TinyApp</title>
   </head>
   <body>
+    
     <%- include('partials/_header') %>
     <main style="margin: 1em;">
       <h3>My URLs</h3>
@@ -31,7 +32,16 @@
           <% for (let id in urls) { %>
             <tr>
               <td><%= id %></td>
+
               <td><%= urls[id] %></td>
+              <td>
+                <form method="POST" action="/urls/<%= id %>/delete">
+                  <button type ="submit" class = "btn btn-outline-danger">delete</button>
+
+
+                </form>
+              </td>
+
             </tr>
           <% } %>
         </tbody>

@@ -6,7 +6,7 @@ function generateRandomString() {
   let x = uuid()
   return x.substring(0, 6);
 }
-app.set("view engine", "ejs") 
+app.set("view engine", "ejs")
 
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
@@ -52,12 +52,24 @@ app.get("/hello", (req, res) => {
 app.get("/set", (req, res) => {
   const a = 1;
   res.send(`a = ${a}`);
- });
+});
 
- 
+
 app.get("/fetch", (req, res) => {
   res.send(`a = ${a}`);
- });
+});
+
+
+
+app.post("/urls/:id/delete", (req, res) => {
+  console.log("delete")
+
+  const id = req.params.id
+  delete urlDatabase[id]
+  res.redirect("/urls")
+});
+
+
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
