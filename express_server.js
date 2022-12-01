@@ -1,6 +1,9 @@
 const express = require("express");
+const { request } = require("http");
 const { v4: uuid } = require('uuid');
+const cookieParser = require("cookie-parser");
 const app = express();
+
 const PORT = 8080; // default port 8080
 function generateRandomString() {
   let x = uuid()
@@ -14,9 +17,13 @@ const urlDatabase = {
 };
 
 app.use(express.urlencoded({ extended: true }));
-
+app.use(cookieParser());
 app.get("/urls", (req, res) => {
-  const templateVars = { urls: urlDatabase };
+  const templateVars = {
+    username: req.cookies["username"],
+    urls: urlDatabase
+  };
+console.log(templateVars);
   res.render("urls_index", templateVars);
 });
 
@@ -28,7 +35,11 @@ app.post("/urls", (req, res) => {
   res.redirect("/urls"); // Respond with 'Ok' (we will replace this)
 });
 app.get("/urls/new", (req, res) => {
-  res.render("urls_new");
+  const templateVars = {
+    username: req.cookies["username"],
+    urls: urlDatabase
+  };
+  res.render("urls_new", templateVars);
 });
 
 app.get("/urls/:id", (req, res) => {
@@ -58,7 +69,18 @@ app.get("/fetch", (req, res) => {
   res.send(`a = ${a}`);
 });
 
-app.post("/urls/:id/delete", (req, res) => {
+app.post("/login", (req, res) => {
+  res.cookie("username", req.body.username)  
+  console.log(req.body.username)
+  res.redirect("/urls");
+});
+
+app.post('/logout', (req, res) => {
+  res.clearCookie('username');
+  res.redirect('/urls');
+});
+
+app.post("/urls/:username/delete", (req, res) => {
   console.log("delete")
 
   const id = req.params.id
@@ -68,13 +90,12 @@ app.post("/urls/:id/delete", (req, res) => {
 
 
 
-const templateVars = {
-  username: req.cookies["username"],
-  // ... any other vars
-};
-res.render("urls_index", templateVars);
+// const templateVars = {
+//   username: req.cookies["username"],
+//   // ... any other vars
+// };
+// res.render("urls_index", templateVars);
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
-
