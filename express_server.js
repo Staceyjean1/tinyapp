@@ -124,9 +124,12 @@ app.post("/register", (req, res) => {
   if (foundUser) {
     return res.status(400).send('email is already in use');
   }
-  // if (foundUser.password !== password) {
-  //   return res.status(400).send('passwords do not match');
-  // }
+  if (!foundUser) {
+    return res.status(403).send('email cannot be found ');
+  }
+  if (foundUser.password !== password) {
+    return res.status(400).send('passwords do not match');
+  }
 
 
   res.cookie("user_id", id); 

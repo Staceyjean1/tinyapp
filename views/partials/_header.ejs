@@ -7,24 +7,22 @@
       <div>
         <p>"You are logged in as " <%= user %> </p>
         <form method= "POST" action = "/logout">
-          
-            <button> Logout</button>
-        </form>
+        </form> 
+          <a href="http://localhost:8080/login"><button>Logout</button>
+        
       </div>
         <%} else { %>
-          <form method= "POST" action = "/login">
-            <input type = "text" placeholder = "email" name = "email">
-              <button> Login</button>
+          
+          <a href="http://localhost:8080/login"><button>Login</button></a>
           </form>
         <% } %>
         
-        </div>
-        <form method= "POST" action = "/register">
+        
+        <a href="http://localhost:8080/register"><button>Register</button></a>
+        <!-- <form method= "POST" action = "/register">
           <input type = "text" placeholder = "email" name = "email" >
           <input type = "text" placeholder = "password" name = "password" >
-            <button> Register</button>
-        </form>
-        <a href="http://localhost:8080/register">Visit register</a>
+        </form> -->
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav">
         <a class="nav-item nav-link" href="/urls">My URLs</a>
