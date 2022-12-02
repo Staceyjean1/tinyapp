@@ -3,9 +3,9 @@
     <a class="navbar-brand" href="/urls">TinyApp</a>
     
       <span class="navbar-toggler-icon"></span>
-      <% if (username) { %>
+      <% if (user) { %>
       <div>
-        <p>"You are logged in as " <%= username %> </p>
+        <p>"You are logged in as " <%= user %> </p>
         <form method= "POST" action = "/logout">
           
             <button> Logout</button>
@@ -13,13 +13,18 @@
       </div>
         <%} else { %>
           <form method= "POST" action = "/login">
-            <label>Username:</label>
-            <input type = "text" placeholder = "username" name = "username">
+            <input type = "text" placeholder = "email" name = "email">
               <button> Login</button>
           </form>
         <% } %>
-        <!-- <form method= "POST" action = "/logout"
-        </form> -->
+        
+        </div>
+        <form method= "POST" action = "/register">
+          <input type = "text" placeholder = "email" name = "email" >
+          <input type = "text" placeholder = "password" name = "password" >
+            <button> Register</button>
+        </form>
+        <a href="http://localhost:8080/register">Visit register</a>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav">
         <a class="nav-item nav-link" href="/urls">My URLs</a>

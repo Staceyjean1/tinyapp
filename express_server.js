@@ -3,12 +3,27 @@ const { request } = require("http");
 const { v4: uuid } = require('uuid');
 const cookieParser = require("cookie-parser");
 const app = express();
+const morgan = require('morgan');
+const morganMiddleware = morgan('dev');
 
 const PORT = 8080; // default port 8080
 function generateRandomString() {
   let x = uuid()
   return x.substring(0, 6);
 }
+
+const users = {
+  userRandomID: {
+    id: "userRandomID",
+    email: "user@example.com",
+    password: "123",
+  },
+  user2RandomID: {
+    id: "user2RandomID",
+    email: "user2@example.com",
+    password: "123",
+  },
+};
 app.set("view engine", "ejs")
 
 const urlDatabase = {
@@ -18,9 +33,10 @@ const urlDatabase = {
 
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(morganMiddleware);
 app.get("/urls", (req, res) => {
   const templateVars = {
-    username: req.cookies["username"],
+    user: req.cookies["user_id"],
     urls: urlDatabase
   };
 console.log(templateVars);
@@ -36,7 +52,22 @@ app.post("/urls", (req, res) => {
 });
 app.get("/urls/new", (req, res) => {
   const templateVars = {
-    username: req.cookies["username"],
+    user: req.cookies["user_id"],
+    urls: urlDatabase
+  };
+  res.render("urls_new", templateVars);
+});
+
+// app.post("/user_ID", (req, res) => {
+  
+//   let key = generateRandomString();
+//   urlDatabase[key] = req.body["longURL"];
+//   // Log the POST request body to the console
+//   res.redirect("/urls"); // Respond with 'Ok' (we will replace this)
+// });
+app.get("/urls/new", (req, res) => {
+  const templateVars = {
+    user: req.cookies["user_id"],
     urls: urlDatabase
   };
   res.render("urls_new", templateVars);
@@ -69,18 +100,74 @@ app.get("/fetch", (req, res) => {
   res.send(`a = ${a}`);
 });
 
-app.post("/login", (req, res) => {
-  res.cookie("username", req.body.username)  
-  console.log(req.body.username)
-  res.redirect("/urls");
+
+// Post-register user_id
+app.post("/register", (req, res) => {
+  const email = req.body.email
+  const password = req.body.password
+  const id = generateRandomString();
+
+  // const user = {id, email, password}
+  users[id] = {
+    id, 
+    email,
+    password,
+  }
+  if (!email || !password) {
+    return res.status(400).send('Provide an email AND a password');
+  }
+  // if (!user_id) {
+  //   // if they don't, respond with an error message
+  //   return res.status(401).send('You must have a cookie to see this page');
+  // }
+  
+  if (foundUser) {
+    return res.status(400).send('email is already in use');
+  }
+  // if (foundUser.password !== password) {
+  //   return res.status(400).send('passwords do not match');
+  // }
+
+
+  res.cookie("user_id", id); 
+  console.log(users);
+  return res.redirect("/urls");
+
+  
+
+
 });
 
+app.get("/register", (req, res) => {
+  let email = req.email
+  const password = req.password
+  res.render("register", email, password);
+});
+
+
+app.post("/login", (req, res) => {
+  res.cookie("user_id", req.body.email)  
+
+  res.redirect("/urls");
+});
+// app.get("/login/", (req, res) => {
+//   let email = req.email
+//   const password = req.password
+//   res.render("login", email, password);
+// });
+
+app.get('/login', (req, res) => {
+  res.render('login');
+});
+
+
 app.post('/logout', (req, res) => {
-  res.clearCookie('username');
+  res.clearCookie('user_id');
+  console.log("cookie")
   res.redirect('/urls');
 });
 
-app.post("/urls/:username/delete", (req, res) => {
+app.post("/urls/:user/delete", (req, res) => {
   console.log("delete")
 
   const id = req.params.id
@@ -89,12 +176,6 @@ app.post("/urls/:username/delete", (req, res) => {
 });
 
 
-
-// const templateVars = {
-//   username: req.cookies["username"],
-//   // ... any other vars
-// };
-// res.render("urls_index", templateVars);
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
