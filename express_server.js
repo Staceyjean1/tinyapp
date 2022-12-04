@@ -48,15 +48,21 @@ app.post("/urls", (req, res) => {
   let key = generateRandomString();
   urlDatabase[key] = req.body["longURL"];
   // Log the POST request body to the console
-  res.redirect("/urls"); // Respond with 'Ok' (we will replace this)
+  // res.redirect("/urls"); // Respond with 'Ok' (we will replace this)
+  if(req.cookies["user_id"]) {
+    res.render("urls");
+  } else {
+    res.render("login");
+  }
+
 });
-app.get("/urls/new", (req, res) => {
-  const templateVars = {
-    user: req.cookies["user_id"],
-    urls: urlDatabase
-  };
-  res.render("urls_new", templateVars);
-});
+// app.get("/urls/new", (req, res) => {
+//   const templateVars = {
+//     user: req.cookies["user_id"],
+//     urls: urlDatabase
+//   };
+//   res.render("urls_new", templateVars);
+// });
 
 // app.post("/user_ID", (req, res) => {
   
@@ -70,11 +76,17 @@ app.get("/urls/new", (req, res) => {
     user: req.cookies["user_id"],
     urls: urlDatabase
   };
-  res.render("urls_new", templateVars);
+  console.log(templateVars.user)
+  if(templateVars.user) {
+    res.render("urls_new", templateVars);
+  } else {
+    res.render("login");
+  }
+
 });
 
 app.get("/urls/:id", (req, res) => {
-  const templateVars = { id: req.params.id, longURL: urlDatabase[req.params.id]/* What goes here? */ };
+  const templateVars = { id: req.params.id, longURL: urlDatabase[req.params.id]};
   res.render("urls_show", templateVars);
 });
 
@@ -121,15 +133,15 @@ app.post("/register", (req, res) => {
   //   return res.status(401).send('You must have a cookie to see this page');
   // }
   
-  if (foundUser) {
-    return res.status(400).send('email is already in use');
-  }
-  if (!foundUser) {
-    return res.status(403).send('email cannot be found ');
-  }
-  if (foundUser.password !== password) {
-    return res.status(400).send('passwords do not match');
-  }
+  // if (foundUser) {
+  //   return res.status(400).send('email is already in use');
+  // }
+  // if (!user_id) {
+  //   return res.status(403).send('email cannot be found ');
+  // }
+  // if (foundUser.password !== password) {
+  //   return res.status(400).send('passwords do not match');
+  // }
 
 
   res.cookie("user_id", id); 
@@ -147,17 +159,41 @@ app.get("/register", (req, res) => {
   res.render("register", email, password);
 });
 
-
+// if email and password params match an existing user:
+// sets a cookie
+// redirects to /urls
+// if email and password params don't match an existing user:
+// returns HTML with a relevant error message
 app.post("/login", (req, res) => {
-  res.cookie("user_id", req.body.email)  
+  console.log(users);
+    let email = req.body.email
+    const password = req.body.password
+    let foundUser = null;
+
+    for(var user_id of Object.keys(users)) {
+      var user_temp = users[user_id]
+      var email_temp = user_temp.email
+      console.log(email_temp);
+      if(email_temp == email) {
+       foundUser = user_temp
+      }
+    }
+  
+  if (!foundUser) {
+    return res.status(403).send('Email cannot be found');
+  }
+  if (foundUser.password !== password) {
+    return res.status(403).send('Incorrect password');
+  }
+  res.cookie("user_id", foundUser.id)  
 
   res.redirect("/urls");
 });
-// app.get("/login/", (req, res) => {
-//   let email = req.email
-//   const password = req.password
-//   res.render("login", email, password);
-// });
+app.get("/login/", (req, res) => {
+  let email = req.email
+  const password = req.password
+  res.render("login", email, password);
+});
 
 app.get('/login', (req, res) => {
   res.render('login');
@@ -166,8 +202,12 @@ app.get('/login', (req, res) => {
 
 app.post('/logout', (req, res) => {
   res.clearCookie('user_id');
+  console.log(res);
   console.log("cookie")
-  res.redirect('/urls');
+  res.render("login");
+});
+app.get('/logout', (req, res) => {
+  res.render('login');
 });
 
 app.post("/urls/:user/delete", (req, res) => {

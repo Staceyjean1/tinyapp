@@ -24,6 +24,10 @@
       </div>
       //insert form here - method (get or post), action (url that corresponds to express server), input as child of form
       <form method="POST" action="/urls/<%= id %>/newURL">
+        <div class="d-flex m-auto" style="width: 60%"> 
+          <input type="text" class="form-control" placeholder="Enter new URL"/>
+          <button type="submit" class="btn btn-outline-warning">UPDATE</button>
+        </div>
     
       <div class="card-footer text-muted"></div>
     </div>
