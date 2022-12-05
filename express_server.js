@@ -81,7 +81,11 @@ app.get("/urls/new", (req, res) => {
     res.render("urls_new", templateVars);
   } else {
     res.render("login");
-  }
+  //   if (user_id ); {
+  //     res.render("urls_new", templateVars);
+  //   }
+    
+  // }
 
 });
 
@@ -157,6 +161,7 @@ app.get("/register", (req, res) => {
   let email = req.email
   const password = req.password
   res.render("register", email, password);
+  
 });
 
 // if email and password params match an existing user:
@@ -175,7 +180,7 @@ app.post("/login", (req, res) => {
       var email_temp = user_temp.email
       console.log(email_temp);
       if(email_temp == email) {
-       foundUser = user_temp
+       foundUser = user_temp;
       }
     }
   
@@ -193,6 +198,9 @@ app.get("/login/", (req, res) => {
   let email = req.email
   const password = req.password
   res.render("login", email, password);
+  if (user[id]) {
+    return redirect("/urls");
+  }
 });
 
 app.get('/login', (req, res) => {
