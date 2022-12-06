@@ -24,19 +24,20 @@ const users = {
     password: "123",
   },
 };
-
 app.set("view engine", "ejs");
+
 
 const urlDatabase = {
   "b2xVn2": {
     longURL: "http://www.lighthouselabs.ca",
     userID: "userRandomID"
-  }
+  },
   "9sm5xK": {
     longURL: "http://www.google.com",
     userID: "user2RandomID"
   },
 };
+
 
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
