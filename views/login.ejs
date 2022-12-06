@@ -1,41 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <!-- Bootstrap CSS -->
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
-      integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
-      crossorigin="anonymous"
-    />
-    <title>URL - TinyApp Example</title>
 
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-  <header>
-    <nav class="navbar navbar-expand-md navbar-dark bg-success">
-  <h2>Login</h2>
-    </header>
-  
-            <body>
-              <br/>
-              <h3><form method="POST" action="/login">
-                  <label>Email:</label>
-                  <input name="email" />
-            </h3>
-              <br/>
-          </p>
-        <h3>      <label>Password:</label>
-                  <input name="password" />
-            </h3>
-            </body>
-              <br/>
+  <title>URL - TinyApp Example</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+    integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous" />
+</head>
 
-                              <button type="submit">Login!</button>
-  </form>
+<body>
+  <%- include('partials/_header') %>
+    <br />
+
+    <form method="POST" action="/login">
+      <label>Email:</label>
+      <input name="email" />
+
+      <label>Password:</label>
+      <input name="password" />
+
+      <button type="submit">Login!</button>
+    </form>
+    <br />
+
+
+    <a href="/register">Register</a>
 </body>
-<a href="http://localhost:8080/register">Register</a>
+
 </html>
