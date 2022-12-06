@@ -55,26 +55,18 @@ app.post("/urls", (req, res) => {
 
   let key = generateRandomString();
   urlDatabase[key] = req.body["longURL"];
-  // Log the POST request body to the console
-  // res.redirect("/urls"); // Respond with 'Ok' (we will replace this)
-  
 
 });
-// app.get("/urls/new", (req, res) => {
-//   const templateVars = {
-//     user: req.cookies["user_id"],
-//     urls: urlDatabase
-//   };
-//   res.render("urls_new", templateVars);
-// });
 
-// app.post("/user_ID", (req, res) => {
+  // function urlsForUser(id) {
+  // let userURLs = {};
+  // for (let url in urlDatabase) {
+  //   if (urlDatabase[url].userID === id) {
+  //     userURLs[url] = urlDatabase[url];
+  //   }
+  // }
+  // return userURLs;
 
-//   let key = generateRandomString();
-//   urlDatabase[key] = req.body["longURL"];
-//   // Log the POST request body to the console
-//   res.redirect("/urls"); // Respond with 'Ok' (we will replace this)
-// });
 app.get("/urls/new", (req, res) => {
   const templateVars = {
     user: req.cookies["user_id"],
@@ -91,8 +83,11 @@ app.get("/urls/new", (req, res) => {
 app.get("/urls/:id", (req, res) => {
   const templateVars = { id: req.params.id, longURL: urlDatabase[req.params.id] };
   res.render("urls_show", templateVars);
-  if (!user) {
-    res.redirect("/youShallNotPass");
+  // if (!user) {
+  //   res.status(401).send("You shall not pass");
+  if (!user_id) {
+    console.error("You must have a cookie to see this page");
+    res.redirect('/protected');
   }
 });
 
@@ -222,13 +217,26 @@ app.get('/logout', (req, res) => {
   res.render('login');
 });
 
-app.post("/urls/:user/delete", (req, res) => {
-  console.log("delete")
-
-  const id = req.params.id
-  delete urlDatabase[id]
-  res.redirect("/urls")
+const urlsForUser = (userID, database) => {
+let userURLs = {};
+for(const url in database) {
+  if(database[url].userID === userID) {
+    userUrls[url] = database[url].longURL
+  }
+}
+return userURLs;
+};
+app.post("/urls/:shortURL/delete", (req, res) => {
+const id = req.params.shortURL
+const user = req.cookies["user_id"]
+const userUrls = Object.keys(urlsForUser(user, urlDatabase));
+  if(userUrls.includes(id)) {
+    delete urlDatabase[id]
+    return res.redirect("/urls")
+  }  
+  res.status(401).send("You are not authorized");
 });
+
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
