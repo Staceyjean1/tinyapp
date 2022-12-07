@@ -1,7 +1,7 @@
 const express = require("express");
 const { request } = require("http");
 const { v4: uuid } = require('uuid');
-const cookieSession = require('cookie-session')
+const cookieSession = require('cookie-session');
 const app = express();
 const morgan = require('morgan');
 const morganMiddleware = morgan('dev');
@@ -9,7 +9,7 @@ const bcrypt = require("bcryptjs");
 const PORT = 8080; // default port 8080
 
 function generateRandomString() {
-  let x = uuid()
+  let x = uuid();
   return x.substring(0, 6);
 }
 
@@ -114,7 +114,7 @@ app.get("/urls.json", (req, res) => {
 
 app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n");
-})
+});
 
 app.get("/set", (req, res) => {
   const a = 1;
@@ -133,7 +133,7 @@ app.post("/register", (req, res) => {
   const password = req.body.password;
   if (!email || !password) {
     return res.status(400).send('Provide an email AND a password');
-  }
+  };
 
   const id = generateRandomString();
   const hash = bcrypt.hashSync(password, 10);
@@ -143,7 +143,7 @@ app.post("/register", (req, res) => {
     id,
     email,
     password: hash,
-  }
+  };
   
   // if (!user_id) {
   //   // if they don't, respond with an error message
@@ -186,13 +186,13 @@ const user = req.session.user_id
 // returns HTML with a relevant error message
 app.post("/login", (req, res) => {
   console.log(users);
-  let email = req.body.email
-  const password = req.body.password
+  let email = req.body.email;
+  const password = req.body.password;
   let foundUser = null;
 
   for (const user_id of Object.keys(users)) {
-    const user_temp = users[user_id]
-    const email_temp = user_temp.email
+    const user_temp = users[user_id];
+    const email_temp = user_temp.email;
     console.log(email_temp);
     if (email_temp == email) {
       foundUser = user_temp;
@@ -206,14 +206,14 @@ app.post("/login", (req, res) => {
     return res.status(403).send('Incorrect password');
   }
   // res.cookie("user_id", foundUser.id)
-  req.session.user_id = foundUser.id
+  req.session.user_id = foundUser.id;
 
   res.redirect("/urls");
 });
 
 app.get("/login", (req, res) => {
   // const user = req.cookies["user_id"]
-const user = req.session.user_id
+const user = req.session.user_id;
   // if user exists, redirect to /urls else render login page
   if (user) {
     res.redirect("/urls");
@@ -230,16 +230,11 @@ const user = req.session.user_id
 
 app.post('/logout', (req, res) => {
   // res.clearCookie('user_id');
-  req.session = null
+  req.session = null;
 
   res.redirect("/login");
 });
 
-
-const getUserByEmail = function(email, database) {
-  // lookup magic...
-  return user;
-};
 
 const urlsForUser = (userID, database) => {
 let userURLs = {};
@@ -250,14 +245,15 @@ for(const url in database) {
 }
 return userURLs;
 };
+
 app.post("/urls/:shortURL/delete", (req, res) => {
-const id = req.params.shortURL
+const id = req.params.shortURL;
 // const user = req.cookies["user_id"]
-const user = req.session.user_id
+const user = req.session.user_id;
 const userUrls = Object.keys(urlsForUser(user, urlDatabase));
   if(userUrls.includes(id)) {
-    delete urlDatabase[id]
-    return res.redirect("/urls")
+    delete urlDatabase[id];
+    return res.redirect("/urls");
   }  
   res.status(401).send("You are not authorized");
 });
