@@ -64,8 +64,11 @@ app.get("/urls", (req, res) => {
 app.post("/urls", (req, res) => {
 
   let key = generateRandomString();
-  urlDatabase[key] = req.body["longURL"];
-
+  urlDatabase[key] = {
+    longURL: req.body.longURL, 
+    userID: req.session.user_id
+  };
+  res.redirect(`/urls/${key}`);
 });
 
   // function urlsForUser(id) {
@@ -85,7 +88,7 @@ app.get("/urls/new", (req, res) => {
   if (templateVars.user) {
     res.render("urls_new", templateVars);
   } else {
-    res.render("login");
+    res.redirect("login");
   }
 });
 
@@ -95,13 +98,14 @@ app.get("/urls/:id", (req, res) => {
     longURL: urlDatabase[req.params.id],
     user: req.session.user_id, 
   };
+  if (!req.session.user_id) {
+    console.error("You must have a cookie to see this page");
+    return res.redirect('/protected');
+  }
   res.render("urls_show", templateVars);
   // if (!user) {
   //   res.status(401).send("You shall not pass");
-  if (!user_id) {
-    console.error("You must have a cookie to see this page");
-    res.redirect('/protected');
-  }
+
 });
 
 app.get("/", (req, res) => {
