@@ -28,3 +28,4 @@ describe('getUserByEmail', function () {
     assert.equal(user.id, expectedOutput);
   }
 }; 
+

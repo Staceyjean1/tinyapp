@@ -3,7 +3,7 @@
     <a class="navbar-brand" href="/urls">TinyApp</a>
     
       <span class="navbar-toggler-icon"></span>
-      <% if (user) { %>
+      <% if(user){ %>
       <div>
         <p>"You are logged in as " <%= user %> </p>
         <form method= "POST" action = "/logout">
