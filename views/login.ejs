@@ -9,25 +9,26 @@
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
     integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous" />
+  
+      <nav class="navbar navbar-expand-md navbar-dark bg-success">
+        <a class="navbar-brand" href="/urls">TinyApp</a>
+        
+          <span class="navbar-toggler-icon"></span>
 </head>
 
-<body>
-  <%- include('partials/_header') %>
-    <br />
+<html>
 
-    <form method="POST" action="/login">
-      <label>Email:</label>
-      <input name="email" />
-
-      <label>Password:</label>
-      <input name="password" />
-
-      <button type="submit">Login!</button>
+  <body>
+    <%- include('partials/_header', {user: user}) %>
+<div>
+    <h1>Login</h1>
+    
+    <form action="/login" method="post">
+      <input type="text" name="email" placeholder="Email">
+      <input type="password" name="password" placeholder="Password">
+      <button type="submit">Submit</button>
     </form>
-    <br />
-
-
-    <a href="/register">Register</a>
-</body>
-
+  </div>
+    
+  </body>
 </html>
