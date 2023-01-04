@@ -102,18 +102,6 @@ app.get("/urls", (req, res) => {
 });
 
 
-// app.get("/urls/new", (req, res) => {
-//   const templateVars = {
-//     user: req.session.user_id,
-//   };
-//   console.log(templateVars.user)
-//   if (templateVars.user) {
-//     res.render("urls_new", templateVars);
-//   } else {
-//     res.redirect("login");
-//   }
-// });
-
 app.get("/urls/:id", (req, res) => {
   const templateVars = {
     id: req.params.id,
@@ -243,27 +231,6 @@ app.post("/register", (req, res) => {
   res.redirect("/urls");
 });
 
-// app.post("/login", (req, res) => {
-//   // Extract email and password from request body
-//   const email = req.body.email;
-//   const password = req.body.password;
-
-//   // Check if email exists in the 'users' object
-//   if (emailExists(email, users)) {
-//     // If email exists, check if password is correct
-//     if (checkPassword(email, password, users)) {
-//       // If password is correct, create a session for the user
-//       req.session.user_id = getUserID(email, users);
-//       res.redirect("/urls");
-//     } else {
-//       // If password is incorrect, send an error message
-//       res.status(403).send("Error: Incorrect email or password");
-//     }
-//   } else {
-//     // If email does not exist, send an error message
-//     res.status(403).send("Error: Incorrect email or password");
-//   }
-// });
 
 app.post("/login", (req, res) => {
   // Check if the email and password match a user in the database
