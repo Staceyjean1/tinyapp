@@ -5,7 +5,11 @@
       <span class="navbar-toggler-icon"></span>
       <% if(user){ %>
       <div>
-        <p>"You are logged in as " <%= user %> </p>
+        <p><% if (user) { %>
+          <div class="navbar-text">You are logged in as <%= user.email %></div>
+        <% } %>
+      </nav>
+         </p>
         <form method= "POST" action = "/logout">
       
           <a href="http://localhost:8080/logout"><button>Logout</button></a>

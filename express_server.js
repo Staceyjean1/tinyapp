@@ -7,11 +7,27 @@ const morgan = require('morgan');
 const morganMiddleware = morgan('dev');
 const bcrypt = require("bcryptjs");
 const PORT = 8080; // default port 8080
+// const { emailExists } = require('.views/helpers.js');
+
+function emailExists(email, object) {
+  for (const user in object) {
+    if (object[user].email === email) {
+      return true;
+    }
+  }
+  return false;
+};
+
+function checkPassword(password) {
+  return true;
+};
+
+
 
 function generateRandomString() {
   let x = uuid();
   return x.substring(0, 6);
-}
+};
 
 const users = {
   userRandomID: {
@@ -132,10 +148,10 @@ app.get("/set", (req, res) => {
 app.get("/fetch", (req, res) => {
   res.send(`a = ${a}`);
 });
-
 app.get('/login', (req, res) => {
-  res.render('login', { user: req.session.user_id });
+  res.render('login', { user: req.session.user });
 });
+
 
 // app.get("/login", (req, res) => {
 //   const user = req.session.user_id;
@@ -187,54 +203,88 @@ app.post("/urls", (req, res) => {
 //   };
 //   res.redirect(`/urls/${key}`);
 // });
+// app.post("/register", (req, res) => {
+//   const email = req.body.email;
+//   const password = req.body.password;
+//   const userID = generateRandomString();
+
+//   if (!email || !password) {
+//     res.status(400).send("Please enter both an email and password");
+//   } else if (emailExists(email)) {
+//     res.status(400).send("An account with this email already exists");
+//   } else {
+//     users[userID] = {
+//       id: userID,
+//       email: email,
+//       password: bcrypt.hashSync(password, 10)
+//     };
+//     req.session.user_id = userID;
+//     res.redirect("/urls");
+//   }
+// });
+
+
 app.post("/register", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
+
+  if (!checkPassword(password)) {
+    return res.status(400).send("Invalid password");
+  }
+
   const userID = generateRandomString();
-
-  if (!email || !password) {
-    res.status(400).send("Please enter both an email and password");
-  } else if (emailExists(email)) {
-    res.status(400).send("An account with this email already exists");
-  } else {
-    users[userID] = {
-      id: userID,
-      email: email,
-      password: bcrypt.hashSync(password, 10)
-    };
-    req.session.user_id = userID;
-    res.redirect("/urls");
-  }
-});
-
-
-
-
-
-app.post("/login", (req, res) => {
-  
-  const email = req.body.email;
-  const password = req.body.password;
-
-  let user = null;
-  for (const userId in users) {
-    if (users[userId].email === email) {
-      user = users[userId];
-      break;
-    }
+  users[userID] = {
+    id: userID,
+    email: email,
+    password: bcrypt.hashSync(password, 10)
   }
 
-  if (!user) {
-    return res.status(400).send("Error: Email not found");
-  }
-
-  if (!bcrypt.compareSync(password, user.password)) {
-    return res.status(400).send("Error: Incorrect password");
-  }
-
-  req.session.user_id = user.id;
+  req.session.user_id = userID;
   res.redirect("/urls");
 });
+
+// app.post("/login", (req, res) => {
+//   // Extract email and password from request body
+//   const email = req.body.email;
+//   const password = req.body.password;
+
+//   // Check if email exists in the 'users' object
+//   if (emailExists(email, users)) {
+//     // If email exists, check if password is correct
+//     if (checkPassword(email, password, users)) {
+//       // If password is correct, create a session for the user
+//       req.session.user_id = getUserID(email, users);
+//       res.redirect("/urls");
+//     } else {
+//       // If password is incorrect, send an error message
+//       res.status(403).send("Error: Incorrect email or password");
+//     }
+//   } else {
+//     // If email does not exist, send an error message
+//     res.status(403).send("Error: Incorrect email or password");
+//   }
+// });
+
+app.post("/login", (req, res) => {
+  // Check if the email and password match a user in the database
+  User.findOne({ email: req.body.email }, (err, user) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send();
+    } else if (!user) {
+      res.status(403).send();
+    } else {
+      if (bcrypt.compareSync(req.body.password, user.password)) {
+        // Set the user object in the session
+        req.session.user = user;
+        res.redirect("/urls");
+      } else {
+        res.status(403).send();
+      }
+    }
+  });
+});
+
 
 
 
